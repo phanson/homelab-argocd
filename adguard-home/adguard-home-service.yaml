@@ -6,12 +6,16 @@ spec:
   ports:
     - port: 53
       targetPort: 53
+      name: port53
     - port: 843
       targetPort: 843
+      name: port843
     - port: 3000
       targetPort: 3000
+      name: port3000
     - port: 5443
       targetPort: 5443
+      name: port5443
   selector:
     app: adguard-home
 
