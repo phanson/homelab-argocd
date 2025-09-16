@@ -16,6 +16,8 @@ spec:
     - port: 5443
       targetPort: 5443
       name: port5443
+  externalIPs:
+    - 0.0.0.0
   selector:
     app: adguard-home
 
