@@ -33,6 +33,6 @@ spec:
             type: Directory
         - name: confdir
           hostPath:
-            path: /data/services/adguard/conf
+            path: /data/services/adguard/config
             type: Directory
 
