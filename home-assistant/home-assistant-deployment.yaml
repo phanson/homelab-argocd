@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      containers:
+        - image: "ghcr.io/home-assistant/home-assistant:stable"
+          name: home-assistant
+          privileged: true
+          hostNetwork: true
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: localtime
+              readOnly: true
+            - mountPath: /config
+              name: confdir
+            - mountPath: /run/dbus
+              name: dbus
+              readOnly: true
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: confdir
+          hostPath:
+            path: /data/services/home-assistant/config
+            type: Directory
+        - name: dbus
+          hostPath:
+            path: /run/dbus
+            type: Directory
+
