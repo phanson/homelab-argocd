@@ -13,6 +13,6 @@ spec:
           type: PathPrefix
           value: /
       backendRefs:
-        name: audiobookshelf
-        port: 80
+        - name: audiobookshelf
+          port: 80
 
