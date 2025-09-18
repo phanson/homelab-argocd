@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stirling-pdf
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: stirling-pdf
+  template:
+    metadata:
+      labels:
+        app: stirling-pdf
+    spec:
+      containers:
+        - image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:latest
+          name: stirling-pdf
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /configs
+              name: confdir
+            - mountPath: /logs
+              name: logdir
+            - mountPath: /customFiles
+              name: customfilesdir
+            - mountPath: /pipeline
+              name: pipelinedir
+            - mountPath: /usr/share/tessdata
+              name: trainingdatadir
+      volumes:
+        - name: confdir
+          hostPath:
+            path: /data/services/stirling-pdf/extraConfigs
+            type: Directory
+        - name: logdir
+          hostPath:
+            path: /data/services/stirling-pdf/logs
+            type: Directory
+        - name: customfilesdir
+          hostPath:
+            path: /data/services/stirling-pdf/customFiles
+            type: Directory
+        - name: pipelinedir
+          hostPath:
+            path: /data/services/stirling-pdf/pipeline
+            type: Directory
+        - name: trainingdatadir
+          hostPath:
+            path: /data/services/stirling-pdf/trainingData
+            type: Directory
+
