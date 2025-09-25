@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blocky
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: blocky
+  template:
+    metadata:
+      labels:
+        app: blocky
+    spec:
+      containers:
+        - image: spx01/blocky
+          name: blocky
+          ports:
+            - containerPort: 53
+            - containerPort: 4000
+          volumeMounts:
+            - mountPath: /app/config.yml
+              name: config
+      volumes:
+        - name: config
+          hostPath:
+            path: /data/services/blocky/config.yml
+            type: File
+
