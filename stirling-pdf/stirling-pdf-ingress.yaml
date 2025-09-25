@@ -6,7 +6,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host('stirling-pdf.philiphanson.org')
+    - match: Host('stirling-pdf.drhack.org')
       kind: Rule
       services:
         - name: stirling-pdf
