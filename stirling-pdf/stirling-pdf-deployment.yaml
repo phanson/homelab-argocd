@@ -17,7 +17,7 @@ spec:
         - image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:latest
           name: stirling-pdf
           ports:
-            - containerPort: 8080
+            - containerPort: 80
           volumeMounts:
             - mountPath: /configs
               name: confdir
