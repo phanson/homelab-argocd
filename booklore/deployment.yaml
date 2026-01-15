@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booklore
+  namespace: booklore
+  labels:
+    app: booklore
+spec:
+  selector:
+    matchLabels:
+      app: booklore
+  replicas: 1
+  template:
+    metadata:
+      name: booklore
+      labels:
+        app: booklore
+    spec:
+      containers:
+        - name: booklore
+          image: booklore/booklore:v1.17.0
+          env:
+            - name: USER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: APP_USER_ID
+            - name: GROUP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: APP_GROUP_ID
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: TZ
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: DATABASE_URL
+            - name: DATABASE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: DB_USER
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: booklore-passwords
+                  key: DB_PASSWORD
+            - name: BOOKLORE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: BOOKLORE_PORT
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 6060
+          volumeMounts:
+            - mountPath: "/app/data"
+              name: app-data
+            - mountPath: "/books"
+              name: books
+            - mountPath: "/bookdrop"
+              name: bookdrop
+        - name: mariadb
+          image: lscr.io/linuxserver/mariadb:11.4.5
+          env:
+            - name: PUID
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: DB_USER_ID
+            - name: PGID
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: DB_GROUP_ID
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: TZ
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: MYSQL_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: booklore
+                  key: DB_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: booklore-passwords
+                  key: DB_PASSWORD
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          volumeMounts:
+            - mountPath: "/app/data"
+              name: db-storage
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: app-data
+        - name: books
+          persistentVolumeClaim:
+            claimName: books-location
+        - name: bookdrop
+          emptyDir:  # not planning to use bookdrop; change this if you do
+            sizeLimit: 10Mi
+        - name: db-storage
+          persistentVolumeClaim:
+            claimName: db-storage

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: booklore
+  namespace: booklore
+  labels:
+    app: booklore
+data:
+  APP_USER_ID: "1000"
+  APP_GROUP_ID: "1000"
+  TZ: "America/Los_Angeles"
+  BOOKLORE_PORT: "6060"
+  DATABASE_URL: "jdbc:mariadb://localhost:3306/booklore"
+  DB_USER: booklore
+  DB_USER_ID: "1000"
+  DB_GROUP_ID: "1000"
+  MYSQL_DATABASE: booklore

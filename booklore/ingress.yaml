@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: booklore
+  namespace: booklore
+  labels:
+    app: booklore
+spec:
+  rules:
+    - host: booklore.drhack.org
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: booklore
+                port:
+                  number: 80

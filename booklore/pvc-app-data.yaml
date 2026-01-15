@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-data
+  namespace: booklore
+  labels:
+    app: booklore
+spec:
+  resources:
+    requests:
+      storage: 128Mi
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
