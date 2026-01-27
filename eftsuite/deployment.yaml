@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eftsuite
+  namespace: eftsuite
+  labels:
+    app: eftsuite
+spec:
+  selector:
+    matchLabels:
+      app: eftsuite
+  replicas: 1
+  template:
+    metadata:
+      name: eftsuite
+      labels:
+        app: eftsuite
+    spec:
+      containers:
+        - name: eftsuite
+          image: robbstumpf/eftsuite
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 8080
