@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manyfold
+  namespace: manyfold
+  labels:
+    app: manyfold
+spec:
+  selector:
+    matchLabels:
+      app: manyfold
+  replicas: 1
+  template:
+    metadata:
+      name: manyfold
+      labels:
+        app: manyfold
+    spec:
+      containers:
+        - name: manyfold
+          image: ghcr.io/manyfold3d/manyfold:0.131.0
+          envFrom:
+            - configMapRef:
+                name: manyfold
+            - secretRef:
+                name: manyfold-db-passwords
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3124
+          volumeMounts:
+            - mountPath: "/models"
+              name: models
+        - name: postgres
+          image: postgres:15
+          envFrom:
+            - configMapRef:
+                name: manyfold
+            - secretRef:
+                name: manyfold-db-passwords
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          volumeMounts:
+            - mountPath: "/app/data"
+              name: db-storage
+        - name: redis
+          image: redis:7
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          volumeMounts:
+            - mountPath: "/app/data"
+              name: db-storage
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: models-location
+        - name: db-storage
+          persistentVolumeClaim:
+            claimName: manyfold-db-storage
