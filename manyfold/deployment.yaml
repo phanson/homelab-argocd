@@ -26,10 +26,10 @@ spec:
                 name: manyfold-db-passwords
           resources:
             requests:
-              memory: "128Mi"
+              memory: "512Mi"
               cpu: "250m"
             limits:
-              memory: "1Gi"
+              memory: "2Gi"
               cpu: "500m"
           ports:
             - containerPort: 3124
