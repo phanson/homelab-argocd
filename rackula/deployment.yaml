@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rackula
+  namespace: rackula
+  labels:
+    app: rackula
+spec:
+  selector:
+    matchLabels:
+      app: rackula
+  replicas: 1
+  template:
+    metadata:
+      name: rackula
+      labels:
+        app: rackula
+    spec:
+      containers:
+        - name: rackula
+          image: ghcr.io/rackulalives/rackula:0.7.3
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          envFrom:
+            - configMapRef:
+                name: rackula-config
+          ports:
+            - containerPort: 8080
+        - name: rackula-api
+          image: ghcr.io/rackulalives/rackula-api:0.7.3
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          envFrom:
+            - configMapRef:
+                name: rackula-config
+          livenessProbe:
+            exec:
+              command:
+                - wget
+                - "-qO-"
+                - "http://127.0.0.1:${RACKULA_API_PORT}/health"
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - mountPath: /data
+              name: rackula-data
+      volumes:
+        - name: rackula-data
+          persistentVolumeClaim:
+            claimName: rackula-data

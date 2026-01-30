@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rackula
+  namespace: rackula
+  labels:
+    app: rackula
+spec:
+  rules:
+    - host: rackula.drhack.org
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: rackula
+                port:
+                  number: 80
